@@ -1,43 +1,36 @@
-var fixedRect, movingRect, movingRect1;
+const Engine = Matter.Engine;
+const World= Matter.World;
+const Bodies = Matter.Bodies;
 
-function setup() {
-  createCanvas(1200,800);
-  fixedRect = createSprite(400, 100, 50, 80);
-  fixedRect.shapeColor = "green";
-  fixedRect.debug = true;
-  movingRect = createSprite(800, 800,80,30);
-  movingRect.shapeColor = "green";
-  movingRect.debug = true;
-  
+var engine, world;
+var ground, ball;
 
-  movingRect1 = createSprite(800, 100, 50, 80);
-  movingRect1.shapeColor = "red";
+function setup(){
+    var canvas = createCanvas(400,400);
+    engine = Engine.create();
+    world = engine.world;
 
-  movingRect.velocityY = -5;
-  movingRect1.velocityY = +5;
+    var ground_options ={
+        isStatic: true
+    }
+
+    var ball_options ={
+        restitution: 1.0
+    }
+
+    ground = Bodies.rectangle(200,390,200,20,ground_options);
+    ball = Bodies.rectangle(200, 100, 50, 50, ball_options);
+
+    World.add(world,ground);
+    World.add(world, ball);
+
+    console.log(ground);
 }
 
-function draw() {
-  background(0,0,0);  
-
-  bounce(movingRect1, movingRect);
-
-  drawSprites();
-}
-
-function bounce(obj1, obj2){
-
-  if (obj1.x - obj2.x < obj2.width/2 + obj1.width/2
-    && obj2.x - obj1.x < obj2.width/2 + obj1.width/2) {
-  obj1.velocityX = obj1.velocityX * (-1);
-  obj2.velocityX = obj2.velocityX * (-1);
-
-}
-if (obj1.y - obj2.y < obj2.height/2 + obj1.height/2
-  && obj2.y - obj1.y < obj2.height/2 + obj1.height/2){
-  obj1.velocityY = obj1.velocityY * (-1);
-  obj2.velocityY = obj2.velocityY * (-1);
-
-}
-
+function draw(){
+    background(0);
+    Engine.update(engine);
+    rectMode(CENTER);
+    rect(ground.position.x,ground.position.y,400,20);
+    rect(ball.position.x, ball.position.y, 50, 50);
 }
